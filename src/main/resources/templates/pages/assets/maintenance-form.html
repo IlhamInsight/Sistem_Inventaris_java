@@ -1,0 +1,211 @@
+<!doctype html>
+<html xmlns:th="http://www.thymeleaf.org">
+  <head>
+    <div th:replace="~{fragments/header :: head-tags}"></div>
+    <title>Maintenance - BangOne ERP</title>
+  </head>
+  <body>
+    <div th:replace="~{fragments/header :: header}"></div>
+
+    <div class="container-fluid">
+      <div class="row">
+        <nav class="col-md-2 d-none d-md-block p-0 shadow-sm sidebar">
+          <div th:replace="~{fragments/left-menu :: leftMenu}"></div>
+        </nav>
+
+        <main class="col-md-10 ms-sm-auto px-md-4 mt-4">
+          <div
+            class="d-flex justify-content-between align-items-center border-bottom pb-2 mb-3"
+          >
+            <h2
+              th:text="${maintenance.id != null ? 'Edit Maintenance' : 'Tambah Maintenance'}"
+            ></h2>
+          </div>
+
+          <div
+            th:if="${errorMessage}"
+            class="alert alert-danger alert-dismissible fade show"
+            role="alert"
+          >
+            <span th:text="${errorMessage}"></span>
+            <button
+              type="button"
+              class="btn-close"
+              data-bs-dismiss="alert"
+            ></button>
+          </div>
+
+          <div class="card shadow-sm border-0 mt-3">
+            <div class="card-body p-4">
+              <form th:action="@{/maintenance/logs/save}" method="post">
+                <input type="hidden" name="id" th:value="${maintenance.id}" />
+
+                <div class="row">
+                  <div class="col-md-6 mb-3">
+                    <label class="form-label fw-bold">Produk</label>
+                    <select name="productId" class="form-select" required>
+                      <option value="">-- Pilih Produk --</option>
+                      <option
+                        th:each="p : ${products}"
+                        th:value="${p.id}"
+                        th:text="${p.name}"
+                        th:selected="${maintenance.product != null and maintenance.product.id == p.id}"
+                      ></option>
+                    </select>
+                  </div>
+
+                  <div class="col-md-6 mb-3">
+                    <label class="form-label fw-bold">Supplier</label>
+                    <select name="supplierId" class="form-select">
+                      <option value="">-- Pilih Supplier --</option>
+                      <option
+                        th:each="s : ${suppliers}"
+                        th:value="${s.id}"
+                        th:text="${s.name}"
+                        th:selected="${maintenance.supplier != null and maintenance.supplier.id == s.id}"
+                      ></option>
+                    </select>
+                  </div>
+                </div>
+
+                <div class="row">
+                  <div class="col-md-4 mb-3">
+                    <label class="form-label fw-bold"
+                      >Tanggal Maintenance</label
+                    >
+                    <input
+                      type="date"
+                      name="maintenanceDate"
+                      class="form-control"
+                      th:value="${maintenance.maintenanceDate}"
+                      required
+                    />
+                  </div>
+
+                  <div class="col-md-4 mb-3">
+                    <label class="form-label fw-bold">Biaya</label>
+                    <input
+                      type="number"
+                      step="0.01"
+                      min="0"
+                      name="cost"
+                      class="form-control"
+                      th:value="${maintenance.cost}"
+                      placeholder="0"
+                    />
+                  </div>
+
+                  <div class="col-md-4 mb-3">
+                    <label class="form-label fw-bold">Status</label>
+
+                    <!-- Admin / Staff selalu bisa edit status -->
+                    <select
+                      th:if="${isAdminOrStaff}"
+                      name="status"
+                      class="form-select"
+                    >
+                      <option
+                        value="PENDING"
+                        th:selected="${maintenance.status == null or maintenance.status == 'PENDING'}"
+                      >
+                        PENDING
+                      </option>
+                      <option
+                        value="IN_PROGRESS"
+                        th:selected="${maintenance.status == 'IN_PROGRESS'}"
+                      >
+                        IN_PROGRESS
+                      </option>
+                      <option
+                        value="DONE"
+                        th:selected="${maintenance.status == 'DONE'}"
+                      >
+                        DONE
+                      </option>
+                    </select>
+
+                    <!-- Karyawan hanya bisa ubah dari PENDING ke IN_PROGRESS -->
+                    <select
+                      th:if="${isKaryawan and (maintenance.status == null or maintenance.status == 'PENDING')}"
+                      name="status"
+                      class="form-select"
+                    >
+                      <option
+                        value="PENDING"
+                        th:selected="${maintenance.status == null or maintenance.status == 'PENDING'}"
+                      >
+                        PENDING
+                      </option>
+                      <option
+                        value="IN_PROGRESS"
+                        th:selected="${maintenance.status == 'IN_PROGRESS'}"
+                      >
+                        IN_PROGRESS
+                      </option>
+                    </select>
+
+                    <!-- Selain kondisi di atas, tampil readonly -->
+                    <div
+                      th:if="${!isAdminOrStaff and !(isKaryawan and (maintenance.status == null or maintenance.status == 'PENDING'))}"
+                    >
+                      <input
+                        type="text"
+                        class="form-control"
+                        th:value="${maintenance.status != null ? maintenance.status : 'PENDING'}"
+                        readonly
+                      />
+                      <input
+                        type="hidden"
+                        name="status"
+                        th:value="${maintenance.status != null ? maintenance.status : 'PENDING'}"
+                      />
+                    </div>
+                  </div>
+                </div>
+
+                <div class="row">
+                  <div class="col-md-6 mb-3">
+                    <label class="form-label fw-bold">Deskripsi Masalah</label>
+                    <textarea
+                      name="issueDescription"
+                      class="form-control"
+                      rows="3"
+                      placeholder="Masalah yang terjadi"
+                      th:text="${maintenance.issueDescription}"
+                    ></textarea>
+                  </div>
+
+                  <div class="col-md-6 mb-3">
+                    <label class="form-label fw-bold">Tindakan</label>
+                    <textarea
+                      name="actionTaken"
+                      class="form-control"
+                      rows="3"
+                      placeholder="Tindakan perbaikan"
+                      th:text="${maintenance.actionTaken}"
+                    ></textarea>
+                  </div>
+                </div>
+
+                <div
+                  class="d-flex justify-content-end gap-2 border-top pt-3 mt-4"
+                >
+                  <a
+                    th:href="@{/maintenance/logs}"
+                    class="btn btn-secondary px-4"
+                    >Batal</a
+                  >
+                  <button type="submit" class="btn btn-primary px-4">
+                    Simpan Maintenance
+                  </button>
+                </div>
+              </form>
+            </div>
+          </div>
+        </main>
+      </div>
+    </div>
+
+    <script th:src="@{/js/bootstrap.bundle.min.js}"></script>
+  </body>
+</html>

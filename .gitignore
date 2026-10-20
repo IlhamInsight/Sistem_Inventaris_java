@@ -1,0 +1,125 @@
+# =========================================================================
+# GITIGNORE - ERM (Enterprise Resource Management / Inventory & Asset)
+# =========================================================================
+
+# --- Gradle & Build Outputs ---
+.gradle/
+build/
+bin/
+out/
+.gradletasknamecache
+
+# Preserve gradle wrapper jar
+!gradle/wrapper/gradle-wrapper.jar
+!**/src/main/**/build/
+!**/src/test/**/build/
+!**/src/main/**/bin/
+!**/src/test/**/bin/
+!**/src/main/**/out/
+!**/src/test/**/out/
+
+# --- Spring Boot & Logs ---
+*.log
+logs/
+*.log.*
+*.hprof
+hs_err_pid*
+replay_pid*
+
+# --- Environment & Sensitive Credentials ---
+.env
+.env.local
+.env.*.local
+*.pem
+*.key
+*.p12
+*.pkcs12
+*.jks
+*.keystore
+# Abaikan file konfigurasi lokal rahasia jika dibuat
+application-local.properties
+application-local.yml
+application-local.yaml
+application-secret.properties
+application-secret.yml
+application-secret.yaml
+
+# --- Local Databases & Dumps ---
+*.db
+*.sqlite
+*.sqlite3
+*.mv.db
+*.trace.db
+*.sql.dump
+
+# --- IDE & Editor Settings ---
+
+# Visual Studio Code
+.vscode/
+*.code-workspace
+
+# IntelliJ IDEA
+.idea/
+*.iws
+*.iml
+*.ipr
+*.idea/workspace.xml
+*.idea/tasks.xml
+*.idea/datasources/
+*.idea/datasources.xml
+*.idea/dataSources.local.xml
+
+# Eclipse & Spring Tool Suite (STS)
+.apt_generated/
+.classpath
+.factorypath
+.project
+.settings/
+.springBeans
+.sts4-cache/
+.metadata/
+
+# NetBeans
+nbproject/private/
+nbbuild/
+dist/
+nbdist/
+.nb-gradle/
+
+# General text editors
+*~
+*.swp
+*.swo
+*.sublime-project
+*.sublime-workspace
+
+# --- Operating System Files ---
+# macOS
+.DS_Store
+.AppleDouble
+.LSOverride
+._*
+.Spotlight-V100
+.Trashes
+
+# Windows
+Thumbs.db
+Thumbs.db:encryptable
+ehthumbs.db
+ehthumbs_vista.db
+desktop.ini
+$RECYCLE.BIN/
+
+# Linux
+.directory
+.fuse_hidden*
+
+# --- Temporary & Uploads ---
+temp/
+tmp/
+uploads/
+
+# Abaikan ribuan SVG mentah Bootstrap Icons (karena web hanya butuh file .woff/.woff2 di folder fonts)
+**/bootstrap-icons-*/*.svg
+src/main/resources/static/css/bootstrap-icons-*/*.svg
+

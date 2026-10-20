@@ -1,0 +1,118 @@
+<!doctype html>
+<html xmlns:th="http://www.thymeleaf.org">
+  <head>
+    <div th:replace="~{fragments/header :: head-tags}"></div>
+    <title>Approval Peminjaman - Inventaris ERP</title>
+  </head>
+  <body>
+    <div th:replace="~{fragments/header :: header}"></div>
+    <div class="container-fluid">
+      <div class="row">
+        <nav class="col-md-2 d-none d-md-block p-0 shadow-sm sidebar">
+          <div th:replace="~{fragments/left-menu :: leftMenu}"></div>
+        </nav>
+        <main class="col-md-10 ms-sm-auto px-md-4 mt-4">
+          <div class="d-flex justify-content-between align-items-center border-bottom pb-2 mb-3">
+            <h2>Approval Peminjaman Barang</h2>
+          </div>
+
+          <div th:if="${errorMessage}" class="alert alert-danger alert-dismissible fade show" role="alert">
+            <span th:text="${errorMessage}"></span>
+            <button type="button" class="btn-close" data-bs-dismiss="alert"></button>
+          </div>
+          <div th:if="${successMessage}" class="alert alert-success alert-dismissible fade show" role="alert">
+            <span th:text="${successMessage}"></span>
+            <button type="button" class="btn-close" data-bs-dismiss="alert"></button>
+          </div>
+
+          <!-- Section 1: Permohonan Menunggu Approval -->
+          <div class="card shadow-sm border-0 mb-4">
+            <div class="card-header bg-primary text-white py-2 d-flex justify-content-between align-items-center">
+              <span class="fw-bold">Permohonan Menunggu Persetujuan (Pending)</span>
+              <span class="badge bg-light text-primary" th:text="${#lists.size(pendingLoans)} + ' Permohonan'">0</span>
+            </div>
+            <div class="card-body p-0">
+              <table class="table table-hover align-middle mb-0">
+                <thead class="table-light">
+                  <tr>
+                    <th class="ps-3">Kode Pinjam</th>
+                    <th>Peminjam</th>
+                    <th>Tgl Pinjam</th>
+                    <th>Jatuh Tempo</th>
+                    <th>Keperluan</th>
+                    <th class="text-center" style="width: 250px;">Aksi</th>
+                  </tr>
+                </thead>
+                <tbody>
+                  <tr th:each="loan : ${pendingLoans}">
+                    <td class="ps-3 fw-bold font-monospace" th:text="${loan.requestCode}">LOAN-001</td>
+                    <td th:text="${loan.employee != null ? loan.employee.name : '-'}">Nama Karyawan</td>
+                    <td th:text="${loan.loanDate}">2026-10-20</td>
+                    <td th:text="${loan.dueDate}">2026-10-27</td>
+                    <td th:text="${loan.purpose}">Presentasi Proyek</td>
+                    <td class="text-center">
+                      <div class="d-flex justify-content-center gap-1">
+                        <!-- Form Setujui -->
+                        <form th:action="@{/loans/approvals/approve/{id}(id=${loan.id})}" method="post" class="d-inline">
+                          <button type="submit" class="btn btn-sm btn-success" onclick="return confirm('Setujui peminjaman ini? Stok barang akan dikurangi.');">
+                            Setujui
+                          </button>
+                        </form>
+                        <!-- Form Tolak -->
+                        <form th:action="@{/loans/approvals/reject/{id}(id=${loan.id})}" method="post" class="d-inline">
+                          <button type="submit" class="btn btn-sm btn-outline-danger" onclick="return confirm('Tolak peminjaman ini?');">
+                            Tolak
+                          </button>
+                        </form>
+                      </div>
+                    </td>
+                  </tr>
+                  <tr th:if="${#lists.isEmpty(pendingLoans)}">
+                    <td colspan="6" class="text-center text-muted py-4">Tidak ada permohonan peminjaman yang menunggu persetujuan.</td>
+                  </tr>
+                </tbody>
+              </table>
+            </div>
+          </div>
+
+          <!-- Section 2: Riwayat Approval Log -->
+          <div class="card shadow-sm border-0">
+            <div class="card-header bg-dark text-white py-2">
+              <span class="fw-bold">Riwayat Log Persetujuan</span>
+            </div>
+            <div class="card-body p-0">
+              <table class="table table-hover align-middle mb-0">
+                <thead class="table-light">
+                  <tr>
+                    <th class="ps-3">Kode Pinjam</th>
+                    <th>Approver</th>
+                    <th>Status</th>
+                    <th>Catatan</th>
+                    <th>Waktu Proses</th>
+                  </tr>
+                </thead>
+                <tbody>
+                  <tr th:each="log : ${approvalLogs}">
+                    <td class="ps-3 fw-bold font-monospace" th:text="${log.loanRequest != null ? log.loanRequest.requestCode : '-'}">LOAN-001</td>
+                    <td th:text="${log.approver != null ? log.approver.username : '-'}">admin</td>
+                    <td>
+                      <span th:if="${log.approvalStatus == 'APPROVED'}" class="badge bg-success">APPROVED</span>
+                      <span th:if="${log.approvalStatus == 'REJECTED'}" class="badge bg-danger">REJECTED</span>
+                      <span th:if="${log.approvalStatus != 'APPROVED' and log.approvalStatus != 'REJECTED'}" class="badge bg-secondary" th:text="${log.approvalStatus}">STATUS</span>
+                    </td>
+                    <td th:text="${log.comments}">Catatan</td>
+                    <td class="text-muted small" th:text="${#temporals.format(log.createdAt, 'dd-MM-yyyy HH:mm')}">20-10-2026 10:00</td>
+                  </tr>
+                  <tr th:if="${#lists.isEmpty(approvalLogs)}">
+                    <td colspan="5" class="text-center text-muted py-4">Belum ada riwayat persetujuan.</td>
+                  </tr>
+                </tbody>
+              </table>
+            </div>
+          </div>
+        </main>
+      </div>
+    </div>
+    <script th:src="@{/js/bootstrap.bundle.min.js}"></script>
+  </body>
+</html>

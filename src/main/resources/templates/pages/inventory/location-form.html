@@ -1,0 +1,43 @@
+<!doctype html>
+<html xmlns:th="http://www.thymeleaf.org">
+  <head>
+    <div th:replace="~{fragments/header :: head-tags}"></div>
+    <title>Form Lokasi - Inventaris ERP</title>
+  </head>
+  <body>
+    <div th:replace="~{fragments/header :: header}"></div>
+    <div class="container-fluid">
+      <div class="row">
+        <nav class="col-md-2 d-none d-md-block p-0 shadow-sm sidebar">
+          <div th:replace="~{fragments/left-menu :: leftMenu}"></div>
+        </nav>
+        <main class="col-md-10 ms-sm-auto px-md-4 mt-4">
+          <div class="d-flex justify-content-between align-items-center border-bottom pb-2 mb-3">
+            <h2 th:text="${location.id == null ? 'Tambah Lokasi' : 'Edit Lokasi'}"></h2>
+          </div>
+
+          <div class="card shadow-sm border-0 mt-3" style="max-width: 600px;">
+            <div class="card-body">
+              <form th:action="@{/inventory/locations/save}" th:object="${location}" method="post">
+                <input type="hidden" th:field="*{id}" />
+
+                <div class="mb-3">
+                  <label class="form-label fw-bold">Nama Lokasi / Ruangan</label>
+                  <input type="text" th:field="*{name}" class="form-control" placeholder="Contoh: Ruang Rapat Lt. 2, Rak A-03" required />
+                </div>
+
+                <div class="d-flex justify-content-end gap-2 border-top pt-3">
+                  <a th:href="@{/inventory/locations}" class="btn btn-secondary">Batal</a>
+                  <button type="submit" class="btn btn-primary px-4">
+                    Simpan Lokasi
+                  </button>
+                </div>
+              </form>
+            </div>
+          </div>
+        </main>
+      </div>
+    </div>
+    <script th:src="@{/js/bootstrap.bundle.min.js}"></script>
+  </body>
+</html>

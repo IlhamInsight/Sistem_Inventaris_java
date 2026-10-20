@@ -1,0 +1,76 @@
+<!doctype html>
+<html xmlns:th="http://www.thymeleaf.org">
+  <head>
+    <div th:replace="~{fragments/header :: head-tags}"></div>
+    <title>Form Unit Aset - Inventaris ERP</title>
+  </head>
+  <body>
+    <div th:replace="~{fragments/header :: header}"></div>
+    <div class="container-fluid">
+      <div class="row">
+        <nav class="col-md-2 d-none d-md-block p-0 shadow-sm sidebar">
+          <div th:replace="~{fragments/left-menu :: leftMenu}"></div>
+        </nav>
+        <main class="col-md-10 ms-sm-auto px-md-4 mt-4">
+          <div class="d-flex justify-content-between align-items-center border-bottom pb-2 mb-3">
+            <h2 th:text="${assetItem.id == null ? 'Tambah Unit Aset' : 'Edit Unit Aset'}"></h2>
+          </div>
+
+          <div class="card shadow-sm border-0 mt-3" style="max-width: 700px;">
+            <div class="card-body">
+              <form th:action="@{/assets/items/save}" th:object="${assetItem}" method="post">
+                <input type="hidden" th:field="*{id}" />
+
+                <div class="mb-3">
+                  <label class="form-label fw-bold">Nomor Seri (Serial Number / Asset Tag)</label>
+                  <input type="text" th:field="*{serialNumber}" class="form-control" placeholder="Contoh: SN-LNV-2026-001" required />
+                </div>
+
+                <div class="mb-3">
+                  <label class="form-label fw-bold">Pilih Produk</label>
+                  <select th:field="*{product.id}" class="form-select" required>
+                    <option value="" disabled selected>-- Pilih Produk --</option>
+                    <option th:each="p : ${products}" 
+                            th:value="${p.id}" 
+                            th:text="${p.name + ' (' + p.code + ')'}"
+                            th:selected="${assetItem.product != null and assetItem.product.id == p.id}">
+                    </option>
+                  </select>
+                </div>
+
+                <div class="mb-3">
+                  <label class="form-label fw-bold">Lokasi Penempatan</label>
+                  <select th:field="*{location.id}" class="form-select">
+                    <option value="">-- Pilih Lokasi (Opsional) --</option>
+                    <option th:each="loc : ${locations}" 
+                            th:value="${loc.id}" 
+                            th:text="${loc.name}"
+                            th:selected="${assetItem.location != null and assetItem.location.id == loc.id}">
+                    </option>
+                  </select>
+                </div>
+
+                <div class="mb-3">
+                  <label class="form-label fw-bold">Status Aset</label>
+                  <select th:field="*{status}" class="form-select" required>
+                    <option value="AVAILABLE">Tersedia (AVAILABLE)</option>
+                    <option value="BORROWED">Sedang Dipinjam (BORROWED)</option>
+                    <option value="MAINTENANCE">Dalam Perbaikan (MAINTENANCE)</option>
+                  </select>
+                </div>
+
+                <div class="d-flex justify-content-end gap-2 border-top pt-3">
+                  <a th:href="@{/assets/items}" class="btn btn-secondary">Batal</a>
+                  <button type="submit" class="btn btn-primary px-4">
+                    Simpan Unit Aset
+                  </button>
+                </div>
+              </form>
+            </div>
+          </div>
+        </main>
+      </div>
+    </div>
+    <script th:src="@{/js/bootstrap.bundle.min.js}"></script>
+  </body>
+</html>

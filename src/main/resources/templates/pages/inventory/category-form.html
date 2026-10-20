@@ -1,0 +1,86 @@
+<!doctype html>
+<html xmlns:th="http://www.thymeleaf.org">
+  <head>
+    <div th:replace="~{fragments/header :: head-tags}"></div>
+    <title>Tambah Kategori - BangOne ERP</title>
+  </head>
+  <body>
+    <div th:replace="~{fragments/header :: header}"></div>
+
+    <div class="container-fluid">
+      <div class="row">
+        <nav class="col-md-2 d-none d-md-block p-0 shadow-sm sidebar">
+          <div th:replace="~{fragments/left-menu :: leftMenu}"></div>
+        </nav>
+
+        <main class="col-md-10 ms-sm-auto px-md-4 mt-4">
+          <div
+            class="d-flex justify-content-between align-items-center border-bottom pb-2 mb-3"
+          >
+            <h2>Tambah Kategori</h2>
+          </div>
+
+          <div class="card shadow-sm border-0 mt-3">
+            <div class="card-body p-4">
+              <form
+                th:action="@{/inventory/categories/save}"
+                th:object="${category}"
+                method="post"
+              >
+                <input type="hidden" th:field="*{id}" />
+
+                <div class="row">
+                  <div class="col-md-6 mb-3">
+                    <label class="form-label fw-bold">Nama Kategori</label>
+                    <input
+                      type="text"
+                      th:field="*{name}"
+                      class="form-control"
+                      placeholder="Nama Kategori"
+                      required
+                    />
+                  </div>
+
+                  <div class="col-md-6 mb-3">
+                    <label class="form-label fw-bold">Kode Kategori</label>
+                    <input
+                      type="text"
+                      th:field="*{code}"
+                      class="form-control bg-light"
+                      readonly
+                    />
+                  </div>
+                </div>
+
+                <div class="row">
+                  <div class="col-md-12 mb-4">
+                    <label class="form-label fw-bold">Keterangan</label>
+                    <textarea
+                      th:field="*{description}"
+                      class="form-control"
+                      rows="3"
+                      placeholder="Deskripsi singkat mengenai kategori ini..."
+                    ></textarea>
+                  </div>
+                </div>
+
+                <div class="d-flex justify-content-end gap-2 border-top pt-3">
+                  <a
+                    th:href="@{/inventory/categories}"
+                    class="btn btn-secondary px-4"
+                    >Batal</a
+                  >
+                  <button type="submit" class="btn btn-primary px-4">
+                    Simpan Kategori
+                  </button>
+                </div>
+              </form>
+            </div>
+          </div>
+        </main>
+      </div>
+    </div>
+
+    <script th:src="@{/js/bootstrap.bundle.min.js}"></script>
+  </body>
+</html>

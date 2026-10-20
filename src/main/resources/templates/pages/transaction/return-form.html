@@ -1,0 +1,108 @@
+<!doctype html>
+<html xmlns:th="http://www.thymeleaf.org">
+  <head>
+    <div th:replace="~{fragments/header :: head-tags}"></div>
+    <title>Proses Pengembalian - BangOne ERP</title>
+  </head>
+  <body>
+    <div th:replace="~{fragments/header :: header}"></div>
+
+    <div class="container-fluid">
+      <div class="row">
+        <nav class="col-md-2 d-none d-md-block p-0 shadow-sm sidebar">
+          <div th:replace="~{fragments/left-menu :: leftMenu}"></div>
+        </nav>
+
+        <main class="col-md-10 ms-sm-auto px-md-4 mt-4">
+          <div
+            class="d-flex justify-content-between align-items-center border-bottom pb-2 mb-3"
+          >
+            <h2>Proses Pengembalian Barang</h2>
+          </div>
+
+          <div
+            th:if="${errorMessage}"
+            class="alert alert-danger alert-dismissible fade show"
+            role="alert"
+          >
+            <span th:text="${errorMessage}"></span>
+            <button
+              type="button"
+              class="btn-close"
+              data-bs-dismiss="alert"
+            ></button>
+          </div>
+
+          <div class="card shadow-sm border-0 mt-3">
+            <div class="card-body p-4">
+              <form th:action="@{/loans/returns/save}" method="post">
+                <div class="row">
+                  <div class="col-md-6 mb-3">
+                    <label class="form-label fw-bold"
+                      >Pilih Transaksi Peminjaman</label
+                    >
+                    <select name="loanRequestId" class="form-select" required>
+                      <option value="">-- Pilih Peminjaman --</option>
+                      <option
+                        th:each="l : ${loanRequests}"
+                        th:value="${l.id}"
+                        th:text="${l.requestCode + ' - ' + (l.employee != null ? l.employee.name : '-') + ' - ' + l.status}"
+                      ></option>
+                    </select>
+                  </div>
+
+                  <div class="col-md-6 mb-3">
+                    <label class="form-label fw-bold"
+                      >Tanggal Pengembalian</label
+                    >
+                    <input
+                      type="date"
+                      name="returnDate"
+                      class="form-control"
+                      required
+                    />
+                  </div>
+                </div>
+
+                <div class="row">
+                  <div class="col-md-6 mb-3">
+                    <label class="form-label fw-bold">Kondisi Setelah</label>
+                    <input
+                      type="text"
+                      name="conditionAfter"
+                      class="form-control"
+                      placeholder="Contoh: Baik / Rusak Ringan"
+                    />
+                  </div>
+
+                  <div class="col-md-6 mb-3">
+                    <label class="form-label fw-bold">Catatan</label>
+                    <input
+                      type="text"
+                      name="notes"
+                      class="form-control"
+                      placeholder="Catatan tambahan"
+                    />
+                  </div>
+                </div>
+
+                <div
+                  class="d-flex justify-content-end gap-2 border-top pt-3 mt-4"
+                >
+                  <a th:href="@{/loans/returns}" class="btn btn-secondary px-4"
+                    >Batal</a
+                  >
+                  <button type="submit" class="btn btn-primary px-4">
+                    Simpan Pengembalian
+                  </button>
+                </div>
+              </form>
+            </div>
+          </div>
+        </main>
+      </div>
+    </div>
+
+    <script th:src="@{/js/bootstrap.bundle.min.js}"></script>
+  </body>
+</html>

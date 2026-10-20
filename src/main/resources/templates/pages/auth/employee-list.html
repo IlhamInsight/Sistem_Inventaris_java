@@ -1,0 +1,119 @@
+<!doctype html>
+<html xmlns:th="http://www.thymeleaf.org">
+  <head>
+    <div th:replace="~{fragments/header :: head-tags}"></div>
+    <title>Daftar Karyawan - BangOne ERP</title>
+  </head>
+  <body>
+    <div th:replace="~{fragments/header :: header}"></div>
+
+    <div class="container-fluid">
+      <div class="row">
+        <nav class="col-md-2 d-none d-md-block p-0 shadow-sm sidebar">
+          <div th:replace="~{fragments/left-menu :: leftMenu}"></div>
+        </nav>
+
+        <main class="col-md-10 ms-sm-auto px-md-4 mt-4">
+          <div
+            class="d-flex justify-content-between align-items-center border-bottom pb-2 mb-3"
+          >
+            <h2>Daftar Karyawan</h2>
+            <a th:href="@{/auth/employees/add}" class="btn btn-primary">
+              Tambah Karyawan
+            </a>
+          </div>
+
+          <div
+            th:if="${success}"
+            class="alert alert-success alert-dismissible fade show"
+            role="alert"
+          >
+            <span th:text="${success}"></span>
+            <button
+              type="button"
+              class="btn-close"
+              data-bs-dismiss="alert"
+            ></button>
+          </div>
+
+          <div
+            th:if="${error}"
+            class="alert alert-danger alert-dismissible fade show"
+            role="alert"
+          >
+            <span th:text="${error}"></span>
+            <button
+              type="button"
+              class="btn-close"
+              data-bs-dismiss="alert"
+            ></button>
+          </div>
+
+          <div class="card shadow-sm border-0 mt-3">
+            <div class="card-body p-0">
+              <table class="table table-hover align-middle mb-0">
+                <thead class="table-dark">
+                  <tr>
+                    <th class="ps-3">Nama</th>
+                    <th>Jabatan</th>
+                    <th>Departemen</th>
+                    <th class="text-center">Aksi</th>
+                  </tr>
+                </thead>
+                <tbody>
+                  <tr th:each="emp : ${employees}">
+                    <td class="ps-3 fw-bold" th:text="${emp.name}">
+                      Nama Karyawan
+                    </td>
+                    <td th:text="${emp.jobTitle}">Jabatan</td>
+                    <td>
+                      <span class="badge bg-secondary" th:text="${emp.department != null ? emp.department.name : '-'}">-</span>
+                    </td>
+                    <td class="text-center">
+                      <a
+                        th:href="@{/auth/employees/edit/{id}(id=${emp.id})}"
+                        class="btn btn-sm btn-outline-warning me-1"
+                      >
+                        Edit
+                      </a>
+
+                      <a
+                        th:if="${emp.user == null}"
+                        th:href="@{/auth/employees/delete/{id}(id=${emp.id})}"
+                        class="btn btn-sm btn-outline-danger"
+                        onclick="
+                          return confirm('Yakin ingin menghapus karyawan ini?');
+                        "
+                      >
+                        Hapus
+                      </a>
+
+                      <div th:if="${emp.user != null}" class="d-inline-block">
+                        <span
+                          class="badge bg-success py-2 px-3 shadow-sm"
+                          style="cursor: help"
+                          title="Karyawan ini memiliki akses sistem. Hapus User terlebih dahulu untuk menghapus data Karyawan."
+                        >
+                          Akun User
+                          Aktif
+                        </span>
+                      </div>
+                    </td>
+                  </tr>
+
+                  <tr th:if="${#lists.isEmpty(employees)}">
+                    <td colspan="3" class="text-center py-4 text-muted">
+                      Belum ada data karyawan.
+                    </td>
+                  </tr>
+                </tbody>
+              </table>
+            </div>
+          </div>
+        </main>
+      </div>
+    </div>
+
+    <script th:src="@{/js/bootstrap.bundle.min.js}"></script>
+  </body>
+</html>

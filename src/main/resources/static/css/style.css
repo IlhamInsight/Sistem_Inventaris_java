@@ -1,0 +1,20 @@
+.main-card-container {
+    text-align: center;
+    padding: 3rem;
+    background: #ffffff;
+    border-radius: 20px;
+    box-shadow: 0 10px 30px rgba(0, 0, 0, 0.08);
+    max-width: 900px;
+    margin: 4rem auto;
+    transition: transform 0.3s ease;
+}
+
+.main-card-container:hover {
+    transform: translateY(-5px); /* Efek melayang saat hover */
+}
+
+.content-body {
+    color: #2d3436;
+    font-size: 1.1rem;
+    line-height: 1.8;
+}

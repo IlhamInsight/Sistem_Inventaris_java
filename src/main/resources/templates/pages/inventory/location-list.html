@@ -1,0 +1,68 @@
+<!doctype html>
+<html xmlns:th="http://www.thymeleaf.org">
+  <head>
+    <div th:replace="~{fragments/header :: head-tags}"></div>
+    <title>Lokasi - Inventaris ERP</title>
+  </head>
+  <body>
+    <div th:replace="~{fragments/header :: header}"></div>
+    <div class="container-fluid">
+      <div class="row">
+        <nav class="col-md-2 d-none d-md-block p-0 shadow-sm sidebar">
+          <div th:replace="~{fragments/left-menu :: leftMenu}"></div>
+        </nav>
+        <main class="col-md-10 ms-sm-auto px-md-4 mt-4">
+          <div class="d-flex justify-content-between align-items-center border-bottom pb-2 mb-3">
+            <h2>Manajemen Lokasi</h2>
+            <a th:href="@{/inventory/locations/add}" class="btn btn-primary">
+              Tambah Lokasi
+            </a>
+          </div>
+
+          <div th:if="${error}" class="alert alert-danger alert-dismissible fade show" role="alert">
+            <span th:text="${error}"></span>
+            <button type="button" class="btn-close" data-bs-dismiss="alert"></button>
+          </div>
+          <div th:if="${success}" class="alert alert-success alert-dismissible fade show" role="alert">
+            <span th:text="${success}"></span>
+            <button type="button" class="btn-close" data-bs-dismiss="alert"></button>
+          </div>
+
+          <div class="card shadow-sm border-0">
+            <div class="card-body p-0">
+              <table class="table table-hover align-middle mb-0">
+                <thead class="table-dark">
+                  <tr>
+                    <th class="ps-3" style="width: 80px;">No</th>
+                    <th>Nama Lokasi</th>
+                    <th class="text-center" style="width: 180px;">Aksi</th>
+                  </tr>
+                </thead>
+                <tbody>
+                  <tr th:each="loc, stat : ${locations}">
+                    <td class="ps-3 text-muted" th:text="${stat.count}">1</td>
+                    <td class="fw-bold" th:text="${loc.name}">Ruang IT</td>
+                    <td class="text-center">
+                      <a th:href="@{/inventory/locations/edit/{id}(id=${loc.id})}" class="btn btn-sm btn-outline-warning me-1">
+                        Edit
+                      </a>
+                      <a th:href="@{/inventory/locations/delete/{id}(id=${loc.id})}" 
+                         class="btn btn-sm btn-outline-danger" 
+                         onclick="return confirm('Yakin ingin menghapus lokasi ini?');">
+                        Hapus
+                      </a>
+                    </td>
+                  </tr>
+                  <tr th:if="${#lists.isEmpty(locations)}">
+                    <td colspan="3" class="text-center text-muted py-4">Belum ada data lokasi.</td>
+                  </tr>
+                </tbody>
+              </table>
+            </div>
+          </div>
+        </main>
+      </div>
+    </div>
+    <script th:src="@{/js/bootstrap.bundle.min.js}"></script>
+  </body>
+</html>

@@ -1,0 +1,363 @@
+<!doctype html>
+<html xmlns:th="http://www.thymeleaf.org">
+  <head>
+    <div th:replace="~{fragments/header :: head-tags}"></div>
+    <title
+      th:text="${loanForm.id != null ? 'Edit Peminjaman Barang - BangOne ERP' : 'Tambah Peminjaman Barang - BangOne ERP'}"
+    >
+      Inventaris
+    </title>
+  </head>
+  <body>
+    <div th:replace="~{fragments/header :: header}"></div>
+
+    <div class="container-fluid">
+      <div class="row">
+        <nav class="col-md-2 d-none d-md-block p-0 shadow-sm sidebar">
+          <div th:replace="~{fragments/left-menu :: leftMenu}"></div>
+        </nav>
+
+        <main class="col-md-10 ms-sm-auto px-md-4 mt-4">
+          <div
+            class="d-flex justify-content-between align-items-center border-bottom pb-2 mb-3"
+          >
+            <h2
+              th:text="${loanForm.id != null ? 'Edit Peminjaman Barang' : 'Tambah Peminjaman Barang'}"
+            ></h2>
+          </div>
+
+          <div
+            th:if="${errorMessage}"
+            class="alert alert-danger alert-dismissible fade show"
+            role="alert"
+          >
+            <span th:text="${errorMessage}"></span>
+            <button
+              type="button"
+              class="btn-close"
+              data-bs-dismiss="alert"
+            ></button>
+          </div>
+
+          <div class="card shadow-sm border-0 mt-3">
+            <div class="card-body p-4">
+              <form
+                th:action="@{/loans/requests/save}"
+                th:object="${loanForm}"
+                method="post"
+              >
+                <input type="hidden" th:field="*{id}" />
+
+                <div class="row">
+                  <div class="col-md-4 mb-3">
+                    <label class="form-label fw-bold">Peminjam</label>
+
+                    <select
+                      th:if="${isAdminOrStaff}"
+                      th:field="*{employeeId}"
+                      class="form-select"
+                      required
+                    >
+                      <option value="">-- Pilih Karyawan --</option>
+                      <option
+                        th:each="e : ${employees}"
+                        th:value="${e.id}"
+                        th:text="${e.name}"
+                      ></option>
+                    </select>
+
+                    <div th:if="${isKaryawan}">
+                      <input
+                        type="text"
+                        class="form-control"
+                        th:value="${currentEmployee != null ? currentEmployee.name : '-'}"
+                        readonly
+                      />
+                      <input
+                        type="hidden"
+                        th:field="*{employeeId}"
+                        th:value="${currentEmployee != null ? currentEmployee.id : ''}"
+                      />
+                    </div>
+                  </div>
+
+                  <div class="col-md-4 mb-3">
+                    <label class="form-label fw-bold">Tanggal Pinjam</label>
+                    <input
+                      type="date"
+                      name="loanDate"
+                      th:value="${loanForm.loanDate}"
+                      class="form-control"
+                      required
+                    />
+                  </div>
+
+                  <div class="col-md-4 mb-3">
+                    <label class="form-label fw-bold">Jatuh Tempo</label>
+                    <input
+                      type="date"
+                      name="dueDate"
+                      th:value="${loanForm.dueDate}"
+                      class="form-control"
+                      required
+                    />
+                  </div>
+                </div>
+
+                <div class="row">
+                  <div class="col-md-6 mb-3">
+                    <label class="form-label fw-bold">Tujuan Peminjaman</label>
+                    <input
+                      type="text"
+                      th:field="*{purpose}"
+                      class="form-control"
+                      placeholder="Contoh: Keperluan operasional"
+                    />
+                  </div>
+
+                  <div class="col-md-4 mb-3">
+                    <label class="form-label fw-bold">Catatan Umum</label>
+                    <input
+                      type="text"
+                      th:field="*{notes}"
+                      class="form-control"
+                      placeholder="Catatan umum peminjaman"
+                    />
+                  </div>
+
+                  <div class="col-md-2 mb-3" th:if="${isAdminOrStaff}">
+                    <label class="form-label fw-bold">Status</label>
+                    <select th:field="*{status}" class="form-select">
+                      <option value="PENDING">PENDING</option>
+                      <option value="APPROVED">APPROVED</option>
+                      <option value="REJECTED">REJECTED</option>
+                      <option value="RETURNED">RETURNED</option>
+                    </select>
+                  </div>
+                </div>
+
+                <hr class="my-4" />
+
+                <div
+                  class="d-flex justify-content-between align-items-center mb-3"
+                >
+                  <h5 class="mb-0">Daftar Barang</h5>
+                  <!-- ✅ PERBAIKAN: tampilkan tombol untuk semua role saat tambah baru -->
+                  <button
+                    type="button"
+                    class="btn btn-success btn-sm"
+                    id="btn-add-item"
+                    th:if="${isAdminOrStaff or (loanForm.id == null or loanForm.id == '')}"
+                  >
+                    Tambah Barang
+                  </button>
+                </div>
+
+                <div id="item-container">
+                  <div
+                    class="row item-row mb-3"
+                    th:each="item, stat : *{items}"
+                  >
+                    <div class="col-md-4">
+                      <label class="form-label fw-bold">Barang</label>
+                      <select
+                        th:name="${'items[' + stat.index + '].productId'}"
+                        class="form-select"
+                        th:disabled="${isKaryawan and loanForm.id != null and loanForm.id != ''}"
+                        required
+                      >
+                        <option value="">-- Pilih Produk --</option>
+                        <option
+                          th:each="p : ${products}"
+                          th:value="${p.id}"
+                          th:text="${p.name}"
+                          th:selected="${item.productId == p.id}"
+                        ></option>
+                      </select>
+                    </div>
+
+                    <div class="col-md-2">
+                      <label class="form-label fw-bold">Qty</label>
+                      <input
+                        type="number"
+                        th:name="${'items[' + stat.index + '].qty'}"
+                        th:value="${item.qty}"
+                        class="form-control"
+                        min="1"
+                        th:readonly="${isKaryawan and loanForm.id != null and loanForm.id != ''}"
+                        required
+                      />
+                    </div>
+
+                    <div class="col-md-3">
+                      <label class="form-label fw-bold">Kondisi Sebelum</label>
+                      <input
+                        type="text"
+                        th:name="${'items[' + stat.index + '].conditionBefore'}"
+                        th:value="${item.conditionBefore}"
+                        class="form-control"
+                        placeholder="Contoh: Baik"
+                        th:readonly="${isKaryawan and loanForm.id != null and loanForm.id != ''}"
+                      />
+                    </div>
+
+                    <div class="col-md-2">
+                      <label class="form-label fw-bold">Catatan</label>
+                      <input
+                        type="text"
+                        th:name="${'items[' + stat.index + '].notes'}"
+                        th:value="${item.notes}"
+                        class="form-control"
+                        placeholder="Catatan"
+                        th:readonly="${isKaryawan and loanForm.id != null and loanForm.id != ''}"
+                      />
+                    </div>
+
+                    <div class="col-md-1 d-flex align-items-end">
+                      <!-- ✅ PERBAIKAN: tampilkan tombol hapus untuk semua role saat tambah baru -->
+                      <button
+                        type="button"
+                        class="btn btn-outline-danger w-100 btn-remove-item"
+                        th:if="${isAdminOrStaff or (loanForm.id == null or loanForm.id == '')}"
+                      >
+                        Hapus</button>
+                    </div>
+                  </div>
+                </div>
+
+                <div
+                  class="d-flex justify-content-end gap-2 border-top pt-3 mt-4"
+                >
+                  <a th:href="@{/loans/requests}" class="btn btn-secondary px-4"
+                    >Batal</a
+                  >
+                  <button type="submit" class="btn btn-primary px-4">
+                    <span
+                      th:text="${loanForm.id != null ? 'Update Peminjaman' : 'Simpan Peminjaman'}"
+                    ></span>
+                  </button>
+                </div>
+              </form>
+            </div>
+          </div>
+        </main>
+      </div>
+    </div>
+
+    <script th:src="@{/js/bootstrap.bundle.min.js}"></script>
+
+    <script th:inline="javascript">
+      /*<![CDATA[*/
+
+      document.addEventListener("DOMContentLoaded", function () {
+        const products = /*[[${products}]]*/ [];
+
+        const itemContainer = document.getElementById("item-container");
+        const addButton = document.getElementById("btn-add-item");
+
+        function buildProductOptions(selectedValue) {
+          selectedValue = selectedValue || "";
+          let options = '<option value="">-- Pilih Produk --</option>';
+          products.forEach(function (product) {
+            const selected = selectedValue === product.id ? "selected" : "";
+            options +=
+              '<option value="' +
+              product.id +
+              '" ' +
+              selected +
+              ">" +
+              product.name +
+              "</option>";
+          });
+          return options;
+        }
+
+        function createItemRow(index) {
+          const row = document.createElement("div");
+          row.className = "row item-row mb-3";
+          row.innerHTML =
+            '<div class="col-md-4">' +
+            '<label class="form-label fw-bold">Barang</label>' +
+            '<select name="items[' +
+            index +
+            '].productId" class="form-select" required>' +
+            buildProductOptions() +
+            "</select>" +
+            "</div>" +
+            '<div class="col-md-2">' +
+            '<label class="form-label fw-bold">Qty</label>' +
+            '<input type="number" name="items[' +
+            index +
+            '].qty" class="form-control" min="1" required />' +
+            "</div>" +
+            '<div class="col-md-3">' +
+            '<label class="form-label fw-bold">Kondisi Sebelum</label>' +
+            '<input type="text" name="items[' +
+            index +
+            '].conditionBefore" class="form-control" placeholder="Contoh: Baik" />' +
+            "</div>" +
+            '<div class="col-md-2">' +
+            '<label class="form-label fw-bold">Catatan</label>' +
+            '<input type="text" name="items[' +
+            index +
+            '].notes" class="form-control" placeholder="Catatan" />' +
+            "</div>" +
+            '<div class="col-md-1 d-flex align-items-end">' +
+            '<button type="button" class="btn btn-outline-danger w-100 btn-remove-item">' +
+            '' +
+            "</button>" +
+            "</div>";
+          return row;
+        }
+
+        function reindexRows() {
+          const rows = itemContainer.querySelectorAll(".item-row");
+          rows.forEach(function (row, index) {
+            const fields = row.querySelectorAll("select, input");
+            fields.forEach(function (field) {
+              if (!field.name) return;
+              if (field.name.includes(".productId")) {
+                field.name = "items[" + index + "].productId";
+              } else if (field.name.includes(".qty")) {
+                field.name = "items[" + index + "].qty";
+              } else if (field.name.includes(".conditionBefore")) {
+                field.name = "items[" + index + "].conditionBefore";
+              } else if (field.name.includes(".notes")) {
+                field.name = "items[" + index + "].notes";
+              }
+            });
+          });
+        }
+
+        function removeItemRow(button) {
+          const rows = itemContainer.querySelectorAll(".item-row");
+          if (rows.length <= 1) {
+            alert("Minimal harus ada satu barang.");
+            return;
+          }
+          button.closest(".item-row").remove();
+          reindexRows();
+        }
+
+        if (addButton) {
+          addButton.addEventListener("click", function () {
+            const index = itemContainer.querySelectorAll(".item-row").length;
+            const newRow = createItemRow(index);
+            itemContainer.appendChild(newRow);
+          });
+        }
+
+        if (itemContainer) {
+          itemContainer.addEventListener("click", function (event) {
+            const removeButton = event.target.closest(".btn-remove-item");
+            if (removeButton) {
+              removeItemRow(removeButton);
+            }
+          });
+        }
+      });
+
+      /*]]>*/
+    </script>
+  </body>
+</html>

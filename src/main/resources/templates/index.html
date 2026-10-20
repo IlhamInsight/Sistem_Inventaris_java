@@ -1,0 +1,102 @@
+<!doctype html>
+<html
+  xmlns:th="http://www.thymeleaf.org"
+  xmlns:sec="http://www.thymeleaf.org/extras/spring-security"
+>
+  <head>
+    <meta charset="UTF-8" />
+    <meta
+      name="viewport"
+      content="width=device-width, initial-scale=1, shrink-to-fit=no"
+    />
+    <title>Inventaris ERP - Application</title>
+
+    <link th:href="@{/css/bootstrap.min.css}" rel="stylesheet" />
+    <link th:href="@{/css/custom-admin.css}" rel="stylesheet" />
+    <link
+      th:href="@{/css/bootstrap-icons-1.11.0/bootstrap-icons.css}"
+      rel="stylesheet"
+    />
+
+    <style>
+      body {
+        background: #f4f7f6;
+        color: #212529;
+        overflow-x: hidden;
+      }
+      .sidebar {
+        min-height: 100vh;
+        background: #ffffff;
+      }
+      .card {
+        border: none;
+        border-radius: 10px;
+      }
+    </style>
+  </head>
+  <body>
+    <div th:replace="~{fragments/header :: header}"></div>
+
+    <div class="container-fluid">
+      <div class="row">
+        <nav
+          sec:authorize="isAuthenticated()"
+          class="col-md-2 d-none d-md-block sidebar shadow-sm p-0"
+        >
+          <div th:replace="~{fragments/left-menu :: leftMenu}"></div>
+        </nav>
+
+        <main
+          th:class="${#authorization.expression('isAuthenticated()')} ? 'col-md-10 ms-sm-auto px-md-4' : 'col-12 px-md-4'"
+        >
+          <div sec:authorize="isAuthenticated()">
+            <div
+              class="alert alert-info shadow-sm d-flex align-items-center mt-4 mb-4"
+              role="alert"
+            >
+              <div>
+                Selamat Datang,
+                <strong
+                  th:text="${currentUser != null && currentUser.employee != null ? currentUser.employee.name : #authentication.name}"
+                  >User</strong
+                >!
+
+                <br /><small
+                  th:if="${currentUser != null && currentUser.employee != null}"
+                >
+                  Sistem Manajemen Inventaris ERP. Perencanaan sumber daya
+                  perusahaan, jabatan Anda :
+                  <span
+                    class="fw-bold"
+                    th:text="${currentUser.employee.jobTitle}"
+                    >Jabatan</span
+                  >.
+                </small>
+                <small
+                  th:unless="${currentUser != null && currentUser.employee != null}"
+                >
+                  Sistem Manajemen Inventaris ERP siap digunakan.
+                </small>
+              </div>
+            </div>
+
+            <div class="dashboard-wrapper">
+              <div th:replace="~{fragments/dashboard :: content}"></div>
+            </div>
+          </div>
+
+          <div sec:authorize="!isAuthenticated()" class="mt-5 text-center">
+            <h1>Silakan Login untuk Mengakses Inventaris</h1>
+            <a th:href="@{/login}" class="btn btn-primary mt-3"
+              >Ke Halaman Login</a
+            >
+          </div>
+        </main>
+      </div>
+    </div>
+
+    <footer th:replace="~{fragments/footer :: footer}"></footer>
+
+    <script th:src="@{/js/bootstrap.bundle.min.js}"></script>
+  </body>
+</html>

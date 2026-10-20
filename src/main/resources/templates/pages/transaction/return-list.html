@@ -1,0 +1,114 @@
+<!doctype html>
+<html xmlns:th="http://www.thymeleaf.org">
+  <head>
+    <div th:replace="~{fragments/header :: head-tags}"></div>
+    <title>Pengembalian Barang - BangOne ERP</title>
+  </head>
+  <body>
+    <div th:replace="~{fragments/header :: header}"></div>
+
+    <div class="container-fluid">
+      <div class="row">
+        <nav class="col-md-2 d-none d-md-block p-0 shadow-sm sidebar">
+          <div th:replace="~{fragments/left-menu :: leftMenu}"></div>
+        </nav>
+
+        <main class="col-md-10 ms-sm-auto px-md-4 mt-4">
+          <div
+            class="d-flex justify-content-between align-items-center border-bottom pb-2 mb-3"
+          >
+            <h2>
+              Manajemen Pengembalian
+            </h2>
+
+            <a th:href="@{/loans/returns/add}" class="btn btn-primary">
+              Proses Pengembalian
+            </a>
+          </div>
+
+          <div
+            th:if="${errorMessage}"
+            class="alert alert-danger alert-dismissible fade show"
+            role="alert"
+          >
+            <span th:text="${errorMessage}"></span>
+            <button
+              type="button"
+              class="btn-close"
+              data-bs-dismiss="alert"
+            ></button>
+          </div>
+
+          <div
+            th:if="${successMessage}"
+            class="alert alert-success alert-dismissible fade show"
+            role="alert"
+          >
+            <span th:text="${successMessage}"></span>
+            <button
+              type="button"
+              class="btn-close"
+              data-bs-dismiss="alert"
+            ></button>
+          </div>
+
+          <div class="card shadow-sm border-0">
+            <div class="card-body p-0">
+              <table class="table table-hover align-middle mb-0">
+                <thead class="table-dark">
+                  <tr>
+                    <th class="ps-3">Kode Peminjaman</th>
+                    <th>Nama Peminjam</th>
+                    <th>Tanggal Kembali</th>
+                    <th>Kondisi Setelah</th>
+                    <th>Catatan</th>
+                    <th>Status</th>
+                    <th class="text-center">Aksi</th>
+                  </tr>
+                </thead>
+                <tbody>
+                  <tr th:each="r : ${returns}">
+                    <td
+                      class="ps-3 fw-bold"
+                      th:text="${r.loanRequest != null ? r.loanRequest.requestCode : '-'}"
+                    ></td>
+                    <td
+                      th:text="${r.loanRequest != null and r.loanRequest.employee != null ? r.loanRequest.employee.name : '-'}"
+                    ></td>
+                    <td th:text="${r.returnDate}"></td>
+                    <td th:text="${r.conditionAfter}"></td>
+                    <td th:text="${r.notes}"></td>
+                    <td>
+                      <span
+                        class="badge bg-success"
+                        th:text="${r.status}"
+                      ></span>
+                    </td>
+                    <td class="text-center">
+                      <a
+                        th:if="${isAdminOrStaff}"
+                        th:href="@{/loans/returns/delete/{id}(id=${r.id})}"
+                        class="btn btn-sm btn-outline-danger"
+                      >
+                        Hapus
+                      </a>
+                    </td>
+                  </tr>
+
+                  <tr th:if="${#lists.isEmpty(returns)}">
+                    <td colspan="7" class="text-center py-4 text-muted">
+                      Belum ada data pengembalian.
+                    </td>
+                  </tr>
+                </tbody>
+              </table>
+            </div>
+          </div>
+        </main>
+      </div>
+    </div>
+
+    <div th:replace="~{fragments/footer :: footer}"></div>
+    <script th:src="@{/js/bootstrap.bundle.min.js}"></script>
+  </body>
+</html>

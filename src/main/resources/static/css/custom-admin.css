@@ -1,0 +1,193 @@
+body {
+    background: #f8f9fa;
+    color: #212529;
+}
+#wrapper {
+    display: flex;
+    min-height: 100vh;
+}
+#content {
+    width: 100%;
+    padding: 20px;
+}
+
+/* ===================================================
+   MODERN ENTERPRISE SIDEBAR STYLES
+   =================================================== */
+.modern-sidebar {
+    background: #0f172a !important; /* Deep modern dark slate */
+    border-right: 1px solid #1e293b !important;
+    min-height: 100vh;
+    display: flex;
+    flex-direction: column;
+}
+
+.modern-sidebar::-webkit-scrollbar {
+    width: 4px;
+}
+.modern-sidebar::-webkit-scrollbar-thumb {
+    background: #334155;
+    border-radius: 4px;
+}
+
+.sidebar-brand-box {
+    padding: 1.5rem 1.25rem 1.25rem;
+    border-bottom: 1px solid #1e293b;
+}
+
+.sidebar-brand-title {
+    font-size: 1.15rem;
+    font-weight: 700;
+    letter-spacing: -0.02em;
+    color: #f8fafc;
+    margin: 0;
+}
+
+.sidebar-brand-badge {
+    display: inline-block;
+    font-size: 0.65rem;
+    font-weight: 700;
+    text-transform: uppercase;
+    letter-spacing: 0.08em;
+    padding: 2px 7px;
+    border-radius: 4px;
+    background: rgba(59, 130, 246, 0.15);
+    color: #60a5fa;
+    border: 1px solid rgba(59, 130, 246, 0.25);
+    margin-top: 4px;
+}
+
+.sidebar-section-title {
+    font-size: 0.68rem;
+    font-weight: 700;
+    text-transform: uppercase;
+    letter-spacing: 0.08em;
+    color: #64748b;
+    padding: 1rem 0.75rem 0.35rem 0.75rem;
+    user-select: none;
+}
+
+.sidebar-menu-nav {
+    display: flex;
+    flex-direction: column;
+    gap: 2px;
+    padding: 0.5rem 0.75rem;
+}
+
+.sidebar-menu-link {
+    display: flex;
+    align-items: center;
+    padding: 9px 14px;
+    border-radius: 6px;
+    color: #94a3b8 !important;
+    font-size: 0.875rem;
+    font-weight: 500;
+    text-decoration: none;
+    transition: all 0.15s ease-in-out;
+    border-left: 3px solid transparent;
+}
+
+.sidebar-menu-link:hover {
+    color: #f8fafc !important;
+    background: rgba(255, 255, 255, 0.05);
+    transform: translateX(2px);
+}
+
+.sidebar-menu-link.active {
+    color: #60a5fa !important;
+    background: linear-gradient(90deg, rgba(37, 99, 235, 0.18) 0%, rgba(37, 99, 235, 0.04) 100%);
+    font-weight: 600;
+    border-left: 3px solid #3b82f6;
+}
+
+.sidebar-footer {
+    margin-top: auto;
+    padding: 1.25rem 0.75rem 1.5rem;
+    border-top: 1px solid #1e293b;
+}
+
+.btn-sidebar-logout {
+    width: 100%;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    padding: 8px 12px;
+    font-size: 0.84rem;
+    font-weight: 600;
+    color: #ef4444;
+    background: rgba(239, 68, 68, 0.08);
+    border: 1px solid rgba(239, 68, 68, 0.2);
+    border-radius: 6px;
+    transition: all 0.2s ease;
+}
+
+.btn-sidebar-logout:hover {
+    background: #ef4444;
+    color: #ffffff;
+    border-color: #ef4444;
+}
+
+/* Menjaga sidebar tetap menempel di kiri */
+.sidebar {
+    position: -webkit-sticky;
+    position: sticky;
+    top: 0;
+    height: 100vh;
+    z-index: 1020;
+    overflow-y: auto; /* Jika menu sangat banyak, sidebar bisa di-scroll internal */
+}
+
+/* Memperbaiki tinggi konten agar scroll lancar */
+.main-content-area {
+    min-height: 100vh;
+}
+
+/* Efek kotak ikon fitur */
+.icon-square {
+    width: 64px;
+    height: 64px;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    border-radius: 16px;
+}
+
+/* Badge lembut ala modern UI */
+.bg-primary-soft {
+    background-color: #e7f0ff;
+}
+
+/* Transisi halus untuk card */
+.card-login {
+    transition: transform 0.3s ease, box-shadow 0.3s ease;
+    border: 1px solid #f1f1f1;
+}
+
+.card-login:hover {
+    transform: translateY(-10px);
+    box-shadow: 0 15px 30px rgba(0,0,0,0.1) !important;
+}
+
+/* Memperbaiki tinggi hero di mobile */
+@media (max-width: 768px) {
+    .vh-100 {
+        height: auto !important;
+        padding-top: 100px;
+        padding-bottom: 50px;
+    }
+}
+
+/* Styling Input Form */
+.form-control:focus, .form-select:focus {
+    background-color: #fff !important;
+    border-color: #0d6efd !important;
+    box-shadow: 0 0 0 0.25rem rgba(13, 110, 253, 0.1);
+}
+
+.input-group-text {
+    color: #6c757d;
+}
+
+.card-header {
+    border-bottom: 1px solid #f8f9fa !important;
+}

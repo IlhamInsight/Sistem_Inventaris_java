@@ -1,0 +1,22 @@
+<div th:fragment="footer" xmlns:th="http://www.thymeleaf.org">
+    <footer class="py-3 bg-dark text-white-50 border-top border-secondary">
+        <div class="container-fluid text-center">
+            <small class="fw-light">
+                <strong>BangOne ERP</strong> &copy; 2026. All Rights Reserved.
+            </small>
+        </div>
+    </footer>
+
+    <style>
+        html, body {
+            height: 100%;
+        }
+        body {
+            display: flex;
+            flex-direction: column;
+        }
+        .container-fluid.row-wrapper { /* Bungkus row utama lo pake class ini */
+            flex: 1 0 auto;
+        }
+    </footer>
+</div>

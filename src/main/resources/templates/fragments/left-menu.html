@@ -1,0 +1,137 @@
+<div
+  th:fragment="leftMenu"
+  xmlns:th="http://www.thymeleaf.org"
+  xmlns:sec="http://www.thymeleaf.org/extras/spring-security"
+>
+  <div
+    sec:authorize="isAuthenticated()"
+    class="modern-sidebar text-white shadow-sm"
+    id="sidebar-wrapper"
+    style="min-width: 250px; min-height: 100vh"
+  >
+    <!-- Brand Header -->
+    <div class="sidebar-brand-box">
+      <a th:href="@{/}" class="text-decoration-none d-block">
+        <h1 class="sidebar-brand-title">INVENTARIS ERP</h1>
+        <span class="sidebar-brand-badge">Enterprise Edition</span>
+      </a>
+    </div>
+
+    <!-- Navigation Menu (Clean Typography, No Cluttered Icons/Emojis) -->
+    <aside class="flex-grow-1">
+      <nav class="sidebar-menu-nav">
+        <!-- Dashboard -->
+        <a class="sidebar-menu-link" th:href="@{/}">
+          Dashboard
+        </a>
+
+        <!-- MANAJEMEN BARANG — ADMIN & STAFF GUDANG -->
+        <div sec:authorize="hasAnyAuthority('ADMIN', 'STAFF_GUDANG')">
+          <div class="sidebar-section-title">
+            Manajemen Barang
+          </div>
+          <a class="sidebar-menu-link" th:href="@{/inventory/products}">
+            Daftar Produk
+          </a>
+          <a class="sidebar-menu-link" th:href="@{/inventory/categories}">
+            Kategori
+          </a>
+          <a class="sidebar-menu-link" th:href="@{/inventory/brands}">
+            Brand / Merk
+          </a>
+          <a class="sidebar-menu-link" th:href="@{/inventory/units}">
+            Satuan Unit
+          </a>
+          <a class="sidebar-menu-link" th:href="@{/inventory/locations}">
+            Lokasi
+          </a>
+
+          <!-- LOGISTIK & GUDANG -->
+          <div class="sidebar-section-title">
+            Logistik & Gudang
+          </div>
+          <a class="sidebar-menu-link" th:href="@{/inventory/warehouses}">
+            Gudang
+          </a>
+          <a class="sidebar-menu-link" th:href="@{/inventory/suppliers}">
+            Supplier
+          </a>
+        </div>
+
+        <!-- TRANSAKSI & ASET -->
+        <div>
+          <div class="sidebar-section-title">
+            Transaksi & Aset
+          </div>
+          <a class="sidebar-menu-link" th:href="@{/loans/requests}">
+            Peminjaman Barang
+          </a>
+          <a class="sidebar-menu-link" th:href="@{/loans/returns}">
+            Pengembalian
+          </a>
+          <a class="sidebar-menu-link" th:href="@{/maintenance/logs}">
+            Maintenance
+          </a>
+
+          <!-- HANYA ADMIN & STAFF GUDANG -->
+          <div sec:authorize="hasAnyAuthority('ADMIN', 'STAFF_GUDANG')">
+            <a class="sidebar-menu-link" th:href="@{/assets/items}">
+              Manajemen Aset
+            </a>
+            <a class="sidebar-menu-link" th:href="@{/loans/approvals}">
+              Approval Peminjaman
+            </a>
+            <a class="sidebar-menu-link" th:href="@{/loans/fines}">
+              Denda & Sanksi
+            </a>
+          </div>
+        </div>
+
+        <!-- MANAJEMEN AKSES — HANYA ADMIN -->
+        <div sec:authorize="hasAuthority('ADMIN')">
+          <div class="sidebar-section-title">
+            Manajemen Akses
+          </div>
+          <a class="sidebar-menu-link" th:href="@{/auth/departments}">
+            Departemen
+          </a>
+          <a class="sidebar-menu-link" th:href="@{/auth/employees}">
+            Daftar Karyawan
+          </a>
+          <a class="sidebar-menu-link" th:href="@{/auth/users}">
+            Manajemen User
+          </a>
+        </div>
+      </nav>
+    </aside>
+
+    <!-- Sidebar Footer / Logout -->
+    <div class="sidebar-footer">
+      <form th:action="@{/logout}" method="post" class="m-0">
+        <button type="submit" class="btn btn-sidebar-logout">
+          Logout
+        </button>
+      </form>
+    </div>
+  </div>
+
+  <!-- Auto Active Highlight Script -->
+  <script>
+    (function () {
+      const currentPath = window.location.pathname;
+      const links = document.querySelectorAll('#sidebar-wrapper .sidebar-menu-link');
+      links.forEach((link) => {
+        const href = link.getAttribute('href');
+        if (href === currentPath) {
+          link.classList.add('active');
+        } else if (
+          href !== '/' &&
+          href !== '' &&
+          currentPath.startsWith(href)
+        ) {
+          link.classList.add('active');
+        }
+      });
+    })();
+  </script>
+</div>

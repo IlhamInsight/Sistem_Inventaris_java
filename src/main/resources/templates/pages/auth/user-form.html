@@ -1,0 +1,122 @@
+<!doctype html>
+<html xmlns:th="http://www.thymeleaf.org">
+  <head>
+    <div th:replace="~{fragments/header :: head-tags}"></div>
+    <title>Tambah User - BangOne ERP</title>
+  </head>
+  <body>
+    <div th:replace="~{fragments/header :: header}"></div>
+
+    <div class="container-fluid">
+      <div class="row">
+        <nav class="col-md-2 d-none d-md-block p-0 shadow-sm sidebar">
+          <div th:replace="~{fragments/left-menu :: leftMenu}"></div>
+        </nav>
+
+        <main class="col-md-10 ms-sm-auto px-md-4 mt-4">
+          <div class="border-bottom pb-2 mb-4">
+            <h2
+              class="h3 fw-bold"
+              th:text="${user.id == null ? 'Tambah User Baru' : 'Edit User'}"
+            ></h2>
+          </div>
+
+          <!-- Alert error -->
+          <div
+            th:if="${error}"
+            class="alert alert-danger"
+            th:text="${error}"
+          ></div>
+          <div
+            th:if="${success}"
+            class="alert alert-success"
+            th:text="${success}"
+          ></div>
+
+          <div class="card shadow-sm border-0 mt-3">
+            <div class="card-body p-4">
+              <!--
+                PENTING: Hapus th:object agar tidak konflik dengan name manual.
+                Semua field pakai name biasa, bukan th:field.
+              -->
+              <form th:action="@{/auth/users/save}" method="post">
+                <!-- ID untuk mode edit -->
+                <input type="hidden" name="id" th:value="${user.id}" />
+
+                <div class="row mb-4">
+                  <!-- Pilih Karyawan -->
+                  <div class="col-md-12 mb-3">
+                    <label class="form-label fw-bold">Pilih Karyawan</label>
+                    <select name="employee.id" class="form-select">
+                      <option value="">-- Pilih Karyawan (Opsional) --</option>
+                      <option
+                        th:each="emp : ${employees}"
+                        th:value="${emp.id}"
+                        th:text="${emp.name}"
+                        th:selected="${user.employee != null and user.employee.id == emp.id}"
+                      ></option>
+                    </select>
+                  </div>
+
+                  <!-- Pilih Role -->
+                  <div class="col-md-12 mb-3">
+                    <label class="form-label fw-bold">Role</label>
+                    <select name="role.id" class="form-select">
+                      <option value="">
+                        -- Pilih Role (Opsional, default: KARYAWAN) --
+                      </option>
+                      <option
+                        th:each="role : ${roles}"
+                        th:value="${role.id}"
+                        th:text="${role.name}"
+                        th:selected="${user.role != null and user.role.id == role.id}"
+                      ></option>
+                    </select>
+                  </div>
+
+                  <!-- Username -->
+                  <div class="col-md-6">
+                    <label class="form-label fw-bold">Username</label>
+                    <input
+                      type="text"
+                      name="username"
+                      th:value="${user.username}"
+                      class="form-control"
+                      placeholder="Contoh: admin"
+                      required
+                    />
+                  </div>
+
+                  <!-- Password -->
+                  <div class="col-md-6">
+                    <label class="form-label fw-bold">Password</label>
+                    <input
+                      type="password"
+                      name="password"
+                      class="form-control"
+                      th:placeholder="${user.id != null ? 'Kosongkan jika tidak ingin mengubah' : 'Masukkan password'}"
+                    />
+                    <small th:if="${user.id != null}" class="text-muted">
+                      Kosongkan jika tidak ingin mengubah password.
+                    </small>
+                  </div>
+                </div>
+
+                <div class="d-flex justify-content-end gap-2 border-top pt-3">
+                  <a th:href="@{/auth/users}" class="btn btn-secondary px-4"
+                    >Batal</a
+                  >
+                  <button type="submit" class="btn btn-primary px-4">
+                    Simpan User
+                  </button>
+                </div>
+              </form>
+            </div>
+          </div>
+        </main>
+      </div>
+    </div>
+
+    <script th:src="@{/js/bootstrap.bundle.min.js}"></script>
+  </body>
+</html>

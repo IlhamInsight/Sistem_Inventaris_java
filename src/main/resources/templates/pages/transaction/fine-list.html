@@ -1,0 +1,86 @@
+<!doctype html>
+<html xmlns:th="http://www.thymeleaf.org">
+  <head>
+    <div th:replace="~{fragments/header :: head-tags}"></div>
+    <title>Manajemen Denda - Inventaris ERP</title>
+  </head>
+  <body>
+    <div th:replace="~{fragments/header :: header}"></div>
+    <div class="container-fluid">
+      <div class="row">
+        <nav class="col-md-2 d-none d-md-block p-0 shadow-sm sidebar">
+          <div th:replace="~{fragments/left-menu :: leftMenu}"></div>
+        </nav>
+        <main class="col-md-10 ms-sm-auto px-md-4 mt-4">
+          <div class="d-flex justify-content-between align-items-center border-bottom pb-2 mb-3">
+            <h2>Manajemen Denda & Kerusakan</h2>
+            <a th:href="@{/loans/fines/add}" class="btn btn-primary">
+              Tambah Denda
+            </a>
+          </div>
+
+          <div th:if="${errorMessage}" class="alert alert-danger alert-dismissible fade show" role="alert">
+            <span th:text="${errorMessage}"></span>
+            <button type="button" class="btn-close" data-bs-dismiss="alert"></button>
+          </div>
+          <div th:if="${successMessage}" class="alert alert-success alert-dismissible fade show" role="alert">
+            <span th:text="${successMessage}"></span>
+            <button type="button" class="btn-close" data-bs-dismiss="alert"></button>
+          </div>
+
+          <div class="card shadow-sm border-0">
+            <div class="card-body p-0">
+              <table class="table table-hover align-middle mb-0">
+                <thead class="table-dark">
+                  <tr>
+                    <th class="ps-3" style="width: 70px;">No</th>
+                    <th>Kode Peminjaman</th>
+                    <th>Peminjam</th>
+                    <th>Alasan Denda</th>
+                    <th>Nominal</th>
+                    <th>Status Bayar</th>
+                    <th class="text-center" style="width: 220px;">Aksi</th>
+                  </tr>
+                </thead>
+                <tbody>
+                  <tr th:each="f, stat : ${fines}">
+                    <td class="ps-3 text-muted" th:text="${stat.count}">1</td>
+                    <td class="fw-bold font-monospace" th:text="${f.loanRequest != null ? f.loanRequest.requestCode : '-'}">LOAN-001</td>
+                    <td th:text="${f.loanRequest != null and f.loanRequest.employee != null ? f.loanRequest.employee.name : '-'}">Budi</td>
+                    <td th:text="${f.reason}">Keterlambatan pengembalian 3 hari</td>
+                    <td class="fw-bold text-danger" th:text="'Rp ' + ${#numbers.formatDecimal(f.amount, 0, 'POINT', 0, 'COMMA')}">Rp 50.000</td>
+                    <td>
+                      <span th:if="${f.isPaid}" class="badge bg-success">LUNAS</span>
+                      <span th:unless="${f.isPaid}" class="badge bg-danger">BELUM LUNAS</span>
+                    </td>
+                    <td class="text-center">
+                      <div class="d-flex justify-content-center gap-1">
+                        <!-- Tombol Bayar -->
+                        <form th:if="${!f.isPaid}" th:action="@{/loans/fines/pay/{id}(id=${f.id})}" method="post" class="d-inline">
+                          <button type="submit" class="btn btn-sm btn-outline-success" onclick="return confirm('Tandai denda ini sudah lunas?');">
+                            Bayar
+                          </button>
+                        </form>
+                        <a th:href="@{/loans/fines/edit/{id}(id=${f.id})}" class="btn btn-sm btn-outline-warning">
+                          Edit
+                        </a>
+                        <a th:href="@{/loans/fines/delete/{id}(id=${f.id})}" 
+                           class="btn btn-sm btn-outline-danger" 
+                           onclick="return confirm('Yakin ingin menghapus denda ini?');">
+                          Hapus</a>
+                      </div>
+                    </td>
+                  </tr>
+                  <tr th:if="${#lists.isEmpty(fines)}">
+                    <td colspan="7" class="text-center text-muted py-4">Belum ada catatan denda.</td>
+                  </tr>
+                </tbody>
+              </table>
+            </div>
+          </div>
+        </main>
+      </div>
+    </div>
+    <script th:src="@{/js/bootstrap.bundle.min.js}"></script>
+  </body>
+</html>
